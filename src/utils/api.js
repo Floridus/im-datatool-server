@@ -224,6 +224,8 @@ async function updateAllPoints (world) {
     if (player.points !== points) {
       playerBulkUpdate.push({
         id: player.id, points,
+        name: player.name,
+        worldId: world.id
       });
     }
 
@@ -270,8 +272,11 @@ async function updateAllPoints (world) {
   for (const alliance of alliances) {
     allianceBulkUpdate.push({
       id: alliance.id,
+      code: alliance.code,
+      name: alliance.name,
       points: alliance.points,
       islands: alliance.islands,
+      worldId: world.id
     });
   }
 

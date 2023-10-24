@@ -34,12 +34,18 @@ function parseDownloadedData (filename, world) {
   });
 }
 
-async function findOrInsertAllIslands (results, world) {
+async function findOrInsertAllIslands (data, world) {
   const today = moment()
   .format('YYYY-MM-DD');
 
-  // for (const line of results) {
-  results.forEach(async (line) => {
+  if (data.error) {
+    console.error('ERROR:', data.error)
+    return
+  }
+
+  const results = data.result ? data.result : [];
+
+  for (const line of results) {
     const [player] = await models.player.findOrCreate({
       where: { name: line.besitzer },
       include: [
@@ -167,7 +173,7 @@ async function findOrInsertAllIslands (results, world) {
         worldId: world.id,
       });
     }
-  })
+  }
 }
 
 async function updateAllPoints (world) {
@@ -507,18 +513,22 @@ async function checkIslandAndAllianceChanges (world) {
   }
 }
 
-function getJSONWorldData (worldKey) {
-  const body = new FormData();
-  body.set("api_key", "417f0029b82cf1efb4641178f292fd13");
-  body.set("server", worldKey);
-  body.set("command", "islandlist");
+function getJSONWorldData (world) {
+  const data = {
+    "api_key": "417f0029b82cf1efb4641178f292fd13",
+    "server": "54",
+    "command": "islandlist"
+  }
 
   fetch(`https://www.insel-monarchie.de/v2_ext_tool/get.php`, {
     method: 'POST',
-    body
+    body: JSON.stringify(data),
   })
       .then(response => response.json())
-      .then(data => findOrInsertAllIslands(data, worldKey))
+      .then(async (data) => {
+        await findOrInsertAllIslands(data, world);
+        await updateAllPoints(world);
+      })
       .catch(err => console.error(err));
 }
 
@@ -528,7 +538,7 @@ async function getWorldData (worldKey) {
   });
 
   if (world) {
-    getJSONWorldData(worldKey)
+    getJSONWorldData(world)
 
     /*const filename = `de_map_game${worldKey}.csv`;
 

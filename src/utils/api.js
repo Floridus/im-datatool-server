@@ -38,9 +38,10 @@ async function findOrInsertAllIslands (results, world) {
   const today = moment()
   .format('YYYY-MM-DD');
 
-  for (const line of results) {
+  // for (const line of results) {
+  results.forEach(async (line) => {
     const [player] = await models.player.findOrCreate({
-      where: { name: line.user_name },
+      where: { name: line.besitzer },
       include: [
         {
           model: models.world,
@@ -56,7 +57,7 @@ async function findOrInsertAllIslands (results, world) {
     });
 
     const [island, created] = await models.island.findOrCreate({
-      where: { number: line.number },
+      where: { number: line.insel },
       include: [
         {
           model: models.world,
@@ -67,8 +68,8 @@ async function findOrInsertAllIslands (results, world) {
         models.player,
       ],
       defaults: {
-        name: line.island_name,
-        points: line.points,
+        name: line.inselname,
+        points: line.punkte,
         playerId: player.id,
         worldId: world.id,
       },
@@ -83,13 +84,13 @@ async function findOrInsertAllIslands (results, world) {
 
     if (!created) {
       let saveIsland = false;
-      if (island.points !== line.points) {
-        const pointsIncrease = line.points - island.points;
+      if (island.points !== line.punkte) {
+        const pointsIncrease = line.punkte - island.points;
 
         islandPointsIncrease.pointsIncrease += pointsIncrease;
         await islandPointsIncrease.save();
 
-        island.points = line.points;
+        island.points = line.punkte;
         saveIsland = true;
       }
 
@@ -111,12 +112,12 @@ async function findOrInsertAllIslands (results, world) {
 
     let alliance = null;
     // Check ob der Spieler eine Allianz hat
-    if (line.ally_code) {
+    if (line.allianz_short) {
       const [obj] = await models.alliance.findOrCreate({
         where: {
           [Op.or]: [
-            { code: line.ally_code },
-            { name: line.ally_name },
+            { code: line.allianz_short },
+            { name: line.allianz_long },
           ],
         },
         include: [
@@ -129,15 +130,15 @@ async function findOrInsertAllIslands (results, world) {
         ],
         defaults: {
           worldId: world.id,
-          code: line.ally_code,
-          name: line.ally_name,
+          code: line.allianz_short,
+          name: line.allianz_long,
         },
       });
 
       // if code or name is same but the other one isn't it
-      if (obj.code !== line.ally_code || obj.name !== line.ally_name) {
-        obj.code = line.ally_code;
-        obj.name = line.ally_name;
+      if (obj.code !== line.allianz_short || obj.name !== line.allianz_long) {
+        obj.code = line.allianz_short;
+        obj.name = line.allianz_long;
         obj.save();
       }
       alliance = obj;
@@ -166,7 +167,7 @@ async function findOrInsertAllIslands (results, world) {
         worldId: world.id,
       });
     }
-  }
+  })
 }
 
 async function updateAllPoints (world) {
@@ -506,13 +507,30 @@ async function checkIslandAndAllianceChanges (world) {
   }
 }
 
+function getJSONWorldData (worldKey) {
+  const body = new FormData();
+  body.set("api_key", "417f0029b82cf1efb4641178f292fd13");
+  body.set("server", worldKey);
+  body.set("command", "islandlist");
+
+  fetch(`https://www.insel-monarchie.de/v2_ext_tool/get.php`, {
+    method: 'POST',
+    body
+  })
+      .then(response => response.json())
+      .then(data => findOrInsertAllIslands(data, worldKey))
+      .catch(err => console.error(err));
+}
+
 async function getWorldData (worldKey) {
   const [world] = await models.world.findOrCreate({
     where: { number: worldKey },
   });
 
   if (world) {
-    const filename = `de_map_game${worldKey}.csv`;
+    getJSONWorldData(worldKey)
+
+    /*const filename = `de_map_game${worldKey}.csv`;
 
     await downloadWorldData(filename)
     .on('ready', async () => {
@@ -521,7 +539,7 @@ async function getWorldData (worldKey) {
       setTimeout(async () => {
         await parseDownloadedData(filename, world);
       }, 3000);
-    });
+    });*/
   }
 }
 

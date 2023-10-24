@@ -43,13 +43,15 @@ app.listen(port, () => {
 });
 
 // at minute 3 past every 2nd hour
-new CronJob('0 3 */2 * * *', function () {
-  console.log('WORLD 47: You will see this message every two hours');
-  getWorldData(47);
-}, null, true, 'Europe/Vienna');
+/*new CronJob('0 3 *!/2 * * *', function () {
+  console.log('WORLD 54: You will see this message every two hours');
+  getWorldData(54);
+}, null, true, 'Europe/Vienna');*/
 
-// at minute 3 past every 2nd hour
-new CronJob('0 8 */2 * * *', function () {
+getWorldData(54);
+
+// at minute 8 past every 2nd hour
+/*new CronJob('0 8 *!/2 * * *', function () {
   console.log('WORLD 48: You will see this message every two hours');
   getWorldData(48);
-}, null, true, 'Europe/Vienna');
+}, null, true, 'Europe/Vienna');*/

@@ -1,38 +1,7 @@
-const fs = require('fs');
-const request = require('request');
-const zlib = require('zlib');
-const csv = require('csv-parser');
 const moment = require('moment-timezone');
 const { Op } = require('sequelize');
 
 const models = require('../models');
-
-function downloadWorldData (filename) {
-  const writeStream = fs.createWriteStream('./data/' + filename);
-  const unzip = zlib.createGunzip();
-
-  return request.get(`http://www.insel-monarchie.de/tools/logs/${filename}.zip`, { encoding: null })
-  .pipe(unzip)
-  .pipe(writeStream);
-}
-
-function parseDownloadedData (filename, world) {
-  const results = [];
-
-  fs.createReadStream('./data/' + filename)
-  .pipe(csv({
-    separator: ';',
-    headers: ['number', 'island_name', 'user_name', 'points', 'ally_code', 'ally_name', 'active'],
-  }))
-  .on('data', (data) => results.push(data))
-  .on('end', async () => {
-    console.log('csv file loaded and start sql commands');
-
-    await findOrInsertAllIslands(results, world);
-
-    await updateAllPoints(world);
-  });
-}
 
 async function findOrInsertAllIslands (data, world) {
   const today = moment()
@@ -539,17 +508,6 @@ async function getWorldData (worldKey) {
 
   if (world) {
     getJSONWorldData(world)
-
-    /*const filename = `de_map_game${worldKey}.csv`;
-
-    await downloadWorldData(filename)
-    .on('ready', async () => {
-      console.log('File downloaded and unzipped!');
-
-      setTimeout(async () => {
-        await parseDownloadedData(filename, world);
-      }, 3000);
-    });*/
   }
 }
 

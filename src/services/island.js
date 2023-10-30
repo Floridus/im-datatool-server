@@ -1,6 +1,6 @@
 const models = require('../models');
 
-exports.getIslands = (pagination, world) => {
+exports.getIslands = (pagination, sorting, world) => {
   return models.island.findAll({
     include: [
       {
@@ -30,6 +30,7 @@ exports.getIslands = (pagination, world) => {
         ],
       },
     ],
+    order: sorting ? [[sorting.field, sorting.order]] : [],
     limit: pagination.perPage,
     offset: (pagination.page - 1) * pagination.perPage,
   })

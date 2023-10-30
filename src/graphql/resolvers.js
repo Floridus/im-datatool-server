@@ -12,8 +12,8 @@ const resolvers = {
     players: (_, { world, sorting, pagination }) => {
       return PlayerService.getPlayers(pagination, sorting, world);
     },
-    islands: (_, { world, pagination }) => {
-      return IslandService.getIslands(pagination, world);
+    islands: (_, { world, sorting, pagination }) => {
+      return IslandService.getIslands(pagination, sorting, world);
     },
     islandChanges: (_, { world, sorting, pagination }) => {
       return IslandChangeService.getIslandChanges(pagination, sorting, world);

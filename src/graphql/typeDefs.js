@@ -73,7 +73,7 @@ const typeDefs = `
 
   type Query {
     players(world: Int, sorting: Sorting, pagination: Pagination = ${defaultPagination}): [Player]
-    islands(world: Int, pagination: Pagination = ${defaultPagination}): [Island]
+    islands(world: Int, sorting: Sorting, pagination: Pagination = ${defaultPagination}): [Island]
     alliances(world: Int, sorting: Sorting, pagination: Pagination = ${defaultPagination}): [Alliance]
     islandChanges(world: Int, sorting: Sorting, pagination: Pagination = ${defaultPagination}): [IslandChange]
     allianceChanges(world: Int, sorting: Sorting, pagination: Pagination = ${defaultPagination}): [AllianceChange]

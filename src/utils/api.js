@@ -1,5 +1,6 @@
 const moment = require('moment-timezone');
 const { Op } = require('sequelize');
+const fetch = require('node-fetch');
 
 const models = require('../models');
 

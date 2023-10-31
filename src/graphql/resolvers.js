@@ -27,6 +27,9 @@ const resolvers = {
     oceansCount: (_, { world }) => {
       return IslandService.getOceansCount(world);
     },
+    playersCount: (_, { world, perPage }) => {
+      return PlayerService.getPlayersCount(world, perPage);
+    },
   },
   Mutation: {
     createPlayer: (_, { name }) => {

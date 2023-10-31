@@ -33,6 +33,13 @@ const typeDefs = `
     playersIncrease: Int
     dailyDate: String
   }
+  
+  type PlayerPointsIncrease {
+    id: Int!
+    pointsIncrease: Int
+    islandsIncrease: Int
+    dailyDate: String
+  }
 
   type Player {
     id: Int!
@@ -41,6 +48,7 @@ const typeDefs = `
     alliance: Alliance
     islands: [Island]
     world: World
+    playerPointsIncreases: [PlayerPointsIncrease]
   }
   
   type Island {
@@ -78,6 +86,7 @@ const typeDefs = `
     islandChanges(world: Int, sorting: Sorting, pagination: Pagination = ${defaultPagination}): [IslandChange]
     allianceChanges(world: Int, sorting: Sorting, pagination: Pagination = ${defaultPagination}): [AllianceChange]
     oceansCount(world: Int): Int!
+    playersCount(world: Int, perPage: Int): Int!
   }
   
   type Mutation {

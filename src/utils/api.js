@@ -487,7 +487,7 @@ async function checkIslandAndAllianceChanges (world) {
 function getJSONWorldData (world) {
   const data = {
     "api_key": "417f0029b82cf1efb4641178f292fd13",
-    "server": "54",
+    "server": world.number,
     "command": "islandlist"
   }
 

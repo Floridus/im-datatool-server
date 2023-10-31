@@ -48,8 +48,8 @@ new CronJob('0 3 */6 * * *', function () {
   getWorldData(54);
 }, null, true, 'Europe/Vienna');
 
-// at minute 8 past every 2nd hour
-/*new CronJob('0 8 *!/2 * * *', function () {
-  console.log('WORLD 48: You will see this message every two hours');
-  getWorldData(48);
-}, null, true, 'Europe/Vienna');*/
+// at minute 3 past every 2nd hour
+new CronJob('0 5 */6 * * *', function () {
+  console.log('WORLD 200: You will see this message every six hours');
+  getWorldData(200);
+}, null, true, 'Europe/Vienna');

@@ -17,4 +17,9 @@ sequelize.authenticate()
 .then(() => console.log('Connection has been established successfully.'))
 .catch(error => console.error('Unable to connect to the database:', error));
 
-getWorldData(54);
+process.argv.forEach((val) => {
+  if (!isNaN(val)) {
+    console.log(`Load data for world ${val}`)
+    getWorldData(val);
+  }
+});

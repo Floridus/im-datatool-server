@@ -53,3 +53,8 @@ new CronJob('0 5 */6 * * *', function () {
   console.log('WORLD 200: You will see this message every six hours');
   getWorldData(200);
 }, null, true, 'Europe/Vienna');
+
+new CronJob('0 7 */6 * * *', function () {
+  console.log('WORLD 55: You will see this message every six hours');
+  getWorldData(55);
+}, null, true, 'Europe/Vienna');
